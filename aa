@@ -1,0 +1,342 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Contracs
+{
+    public interface IAddCollection
+    {
+        
+        int Add(string text);
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Contracs
+{
+    public interface IAddRemoveCollection
+    {
+        int Add(string text);
+
+        string Remove();
+
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Contracs
+{
+    interface ICounter
+    {
+       
+
+        public int addOperation { get; }
+
+        public int removeOperation { get; }
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Contracs
+{
+    public interface IEngine
+    {
+        void Run();
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Contracs
+{
+    public interface IMyList
+    {
+        int Add(string item);
+
+        string Remove();
+
+        int Used();
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Contracs
+{
+    public interface IReaeder
+    {
+
+        string ReadLine();
+    }
+}
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Contracs
+{
+    public interface IWriter
+    {
+        void Write(string text);
+
+        void WriteLine(string text);
+
+
+    }
+}
+
+namespace CollectionHierarchy2.Core
+{
+    using CollectionHierarchy2.Contracs;
+    using CollectionHierarchy2.Models;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Cryptography;
+    public class Engine : IEngine
+    {
+        //inicializaciq na klasove
+
+        private IReaeder reader;
+        private IWriter writer;
+
+        public Engine(IReaeder reader, IWriter writer)
+        {
+            this.reader = reader;
+            this.writer = writer;
+        }
+
+        public void Run()
+        {
+
+            var list1 = new List<int>();
+            var list2 = new List<int>();
+            var list3 = new List<int>();
+
+            var remouve1 = new List<string>();
+            var remove2 = new List<string>();
+
+            var input = reader.ReadLine().Split(" ", StringSplitOptions.RemoveEmptyEntries).ToArray();
+            var removeOperations = int.Parse(reader.ReadLine());
+            IAddCollection collectionsA = new CollectionA();
+            IAddRemoveCollection collectionsB = new CollectionsB();
+            IMyList c1 = new MyList();
+
+            foreach (var item in input)
+            {
+               list1.Add(collectionsA.Add(item)); 
+               list2.Add(collectionsB.Add(item)); 
+               list3.Add(c1.Add(item));                               
+
+            }
+            writer.WriteLine(string.Join(" ", list1));
+            writer.WriteLine(string.Join(" ", list2));
+            writer.WriteLine(string.Join(" ", list3));
+
+            for (int i = 0; i < removeOperations; i++)
+            {
+                remouve1.Add(collectionsB.Remove());
+                remove2.Add(c1.Remove());
+            }
+            writer.WriteLine(string.Join(" ", remouve1));
+            writer.WriteLine(string.Join(" ", remove2));
+
+        }
+
+
+
+    }
+}
+using CollectionHierarchy2.Contracs;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Models
+{
+    public class ConsoleReader : IReaeder
+    {
+        public string ReadLine()
+        {
+            return Console.ReadLine();
+        }
+    }
+}
+using CollectionHierarchy2.Contracs;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace CollectionHierarchy2.Models
+{
+    public class ConsoleWriter : IWriter
+    {
+        public void Write(string text)
+        {
+            Console.Write(text);
+        }
+
+        public void WriteLine(string text)
+        {
+            Console.WriteLine(text);
+        }
+    }
+}
+using CollectionHierarchy2.Contracs;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+
+namespace CollectionHierarchy2.Models
+{
+    public class CollectionA : IAddCollection, ICounter
+    {
+        private readonly List<string> listA;
+
+        private int addOperations;
+        private int removeOperations;
+
+        public CollectionA()
+        {
+            this.listA = new List<string>();
+            this.addOperations = 0;
+            this.removeOperations = 0;
+        }
+
+        public int addOperation { get; private set; }
+
+        public int removeOperation { get; private set; }
+
+        public int Add(string text)
+        {
+            this.listA.Add(text);
+
+            var index = this.listA.IndexOf(text);
+
+            this.addOperations++;
+            return index;
+        }
+
+        
+    }
+}
+using CollectionHierarchy2.Contracs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace CollectionHierarchy2.Models
+{
+    public class CollectionsB : IAddRemoveCollection, ICounter
+    {
+        private readonly List<string> listB;
+        private int addOperations;
+        private int removeOperations;
+
+        public CollectionsB()
+        {
+            this.listB = new List<string>();
+            this.addOperations = 0;
+            this.removeOperations = 0;
+        }
+
+
+        public int addOperation { get; private set; }
+
+        public int removeOperation { get; private set; }
+
+        public int Add(string text)
+        {
+            this.listB.Insert(0, text);            
+            var index = this.listB.IndexOf(text);      
+            this.addOperations++;
+            return index;
+
+        }
+
+        public string Remove()
+        {
+
+            string item = this.listB.ElementAt(listB.Count - 1);
+            this.listB.RemoveAt(listB.Count - 1);
+            this.removeOperations++;
+            return item;
+        }
+    }
+}
+using CollectionHierarchy2.Contracs;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace CollectionHierarchy2.Models
+{
+    public class MyList : IMyList, ICounter
+    {
+        private readonly List<string> listC;
+
+        public MyList()
+        {
+            this.listC =new List<string>();
+            this.addOperation = 0;
+            this.removeOperation = 0;
+        }
+
+        public int addOperation { get; private set; }
+
+        public int removeOperation { get; private set; }
+
+        int IMyList.Add(string item)
+        {
+            this.listC.Insert(0, item);
+            var index = this.listC.IndexOf(item);
+            this.addOperation++;
+            return index;
+        }
+
+        string IMyList.Remove()
+        {
+            string item = this.listC.ElementAt(0);
+            this.listC.RemoveAt(0);
+            this.removeOperation++;
+            return item;
+        }
+
+        public int Used()
+        {
+            return this.listC.Count;
+        }
+    }
+}
+using CollectionHierarchy2.Contracs;
+using CollectionHierarchy2.Core;
+using CollectionHierarchy2.Models;
+using System;
+
+namespace CollectionHierarchy2
+{
+    class StartUp
+    {
+        static void Main(string[] args)
+        {
+
+            IReaeder reader = new ConsoleReader();
+            IWriter writer = new ConsoleWriter();
+
+            IEngine engine = new Engine(reader, writer);
+            engine.Run();
+        }
+    }
+}
